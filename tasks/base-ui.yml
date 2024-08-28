@@ -1,0 +1,26 @@
+---
+- name: Ensure gnome-shell is installed
+  # Includes gnome-session,gdm and gnome-control-center
+  ansible.builtin.dnf:
+    name: gnome-shell
+    state: present
+  become: true
+  register: install_gnome_shell
+
+- name: Ensure that gnome-tweaks is installed
+  ansible.builtin.dnf:
+    name: "{{ ui_packages }}"
+    state: present
+  become: true
+  when:
+   - install_gnome_shell is succeeded
+
+- name: Ensure that systemd target is set to graphical
+  ansible.builtin.file:
+    src: /usr/lib/systemd/system/graphical.target
+    dest: /etc/systemd/system/default.target
+    state: link
+  become: true
+  when:
+   - install_gnome_shell is succeeded
+   - enable_ui

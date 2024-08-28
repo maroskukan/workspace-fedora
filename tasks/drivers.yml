@@ -1,0 +1,6 @@
+---
+- name: Ensure that device drivers are available
+  ansible.builtin.dnf:
+    name: "{{ driver_packages }}"
+    state: present
+  become: true

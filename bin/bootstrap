@@ -1,0 +1,26 @@
+#!/bin/sh
+
+echo "
+###############################################################################
+# Ensure that package list is current and update packages                     #
+###############################################################################
+"
+sudo dnf update && sudo dnf -y upgrade
+
+echo "
+###############################################################################
+# Ensure Ansible is present                                                   #
+###############################################################################
+"
+if [ "$(ansible --version 2>/dev/null)" ]; then
+    echo "Ansible already installed."
+else
+    sudo dnf install ansible -y
+fi
+
+echo "
+###############################################################################
+# Execute Main Playbook                                                       #
+###############################################################################
+"
+ansible-playbook main.yml --ask-become-pass

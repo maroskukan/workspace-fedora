@@ -1,0 +1,13 @@
+---
+- name: Ensure OCalm package manager opam is present
+  ansible.builtin.dnf:
+    name: opam
+    state: present
+  become: true
+
+- name: Ensure opam is initialized
+  ansible.builtin.shell: /usr/bin/opam init --yes --shell-setup  
+
+- name: Ensure OCalm Platform tools are present
+  ansible.builtin.shell: /usr/bin/opam install --yes {{ item }}
+  loop: "{{ opam_pkgs }}"

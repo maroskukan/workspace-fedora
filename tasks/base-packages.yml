@@ -1,0 +1,32 @@
+---
+- name: Ensure repository for brave-browser is present
+  ansible.builtin.copy:
+    dest: /etc/yum.repos.d/brave-browser.repo
+    content: |
+      [brave-browser]
+      name=Brave Browser
+      enabled=1
+      autorefresh=1
+      baseurl=https://brave-browser-rpm-release.s3.brave.com/$basearch
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
+- name: Ensure rpm key for brave-browser is present
+  ansible.builtin.rpm_key:
+    key: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+    state: present
+  become: true
+
+- name: Ensure rpm key for Visual Studio Code is present
+  ansible.builtin.rpm_key:
+    key: https://packages.microsoft.com/keys/microsoft.asc
+    state: absent
+  become: true
+
+- name: Ensure base dnf packages are present
+  ansible.builtin.dnf:
+    name: "{{ base_packages }}"
+    state: present
+  become: true

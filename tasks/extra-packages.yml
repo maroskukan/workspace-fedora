@@ -1,0 +1,19 @@
+---
+- name: Ensure extra dnf packages are present
+  ansible.builtin.dnf:
+    name: "{{ extra_packages }}"
+    state: present
+  become: true
+
+- name: Ensure extra flatpak remotes are present
+  ansible.builtin.flatpak_remote:
+    name: flathub
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+    state: present
+  become: true
+
+- name: Ensure extra flatpak packages are present
+  ansible.builtin.flatpak:
+    name: "{{ extra_flatpak_packages }}"
+    state: present
+  become: true

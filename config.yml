@@ -1,0 +1,120 @@
+---
+downloads: /tmp
+
+install_drivers: false
+driver_packages:
+  - iwlwifi-mvm-firmware
+
+install_ui_base: true
+configure_ui: true
+enable_ui: true
+ui_packages:
+  - gnome-tweaks
+  - gnome-extensions-app
+
+install_base: true
+base_packages:
+  - pciutils
+  - usbutils
+  - fastfetch
+  - flatpak
+  - NetworkManager-wifi
+  - git
+  - vim
+  - nautilus
+  - gnome-terminal
+  - gnome-terminal-nautilus
+  - brave-browser
+  - bat
+  - gh
+  #- iperf
+  #- jq
+  #- kodi
+  #- nmap
+  #- openssl
+  #- packer
+  #- pass
+  #- shellcheck
+  #- terraform
+  - tree
+  #- unzip
+  #- vagrant
+  #- vault
+  #- zsh
+  #- xclip
+
+install_extra: true
+extra_packages:
+  #- discord
+  #- postman
+  - vlc
+  #- zoom-client
+
+extra_flatpak_packages:
+  - com.spotify.Client
+  - com.visualstudio.code
+  #- codium
+  #- slack
+
+install_vbox: true
+vbox_packages:
+  - virtualbox
+
+install_docker: true
+docker_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-compose
+
+vscode_extensions:
+  - vscode-icons-team.vscode-icons
+  - zhuangtongfa.material-theme
+  - redhat.ansible
+  - redhat.vscode-yaml
+  - redhat.vscode-xml
+  - shardulm94.trailing-spaces
+  - eamodio.gitlens
+  - ms-python.python
+  - yzhang.markdown-all-in-one
+  - ms-azuretools.vscode-docker
+
+install_ocaml_dev: true
+opam_pkgs:
+  - ocaml-lsp-server
+  - odoc
+  - ocamlformat
+  - utop
+
+install_python_dev: true
+build_packages:
+  - make
+  - build-essential
+  - libssl-dev
+  - zlib1g-dev
+  - libbz2-dev
+  - libreadline-dev
+  - libsqlite3-dev
+  - wget
+  - curl
+  - llvm
+  - libncursesw5-dev
+  - xz-utils
+  - tk-dev
+  - libxml2-dev
+  - libxmlsec1-dev
+  - libffi-dev
+  - liblzma-dev
+
+install_java: true
+java_packages:
+  - default-jre
+
+install_ruby_dev: true
+ruby_packages:
+  - build-essential
+  - ruby-full
+  - zlib1g-dev
+ruby_gems:
+  - bundler
+  - jekyll

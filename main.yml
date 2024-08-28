@@ -1,0 +1,40 @@
+---
+- hosts: all
+
+  pre_tasks:
+    - name: Include custom configuration.
+      include_vars: "{{ item }}"
+      with_fileglob:
+        - "{{ playbook_dir }}/config.yml"
+      tags: ['always']
+
+    - name: Ensure dnf cache is update
+      ansible.builtin.dnf:
+        update_cache: true
+      become: true
+      tags: ['always']
+
+  tasks:
+    - ansible.builtin.import_tasks: tasks/drivers.yml
+      tags: ['drivers']
+      when: install_drivers
+
+    - ansible.builtin.import_tasks: tasks/base-ui.yml
+      tags: ['base-ui']
+      when: install_ui_base
+
+    - ansible.builtin.import_tasks: tasks/base-packages.yml
+      tags: ['base-packages']
+      when: install_base
+
+    - ansible.builtin.import_tasks: tasks/extra-packages.yml
+      tags: ['extra-packages']
+      when: install_extra
+
+    - ansible.builtin.import_tasks: tasks/launcher.yml
+      tags: ['ui-launcher']
+      when: configure_ui
+
+    - ansible.builtin.import_tasks: tasks/ocaml-dev.yml
+      tags: ['ocaml-dev']
+      when: install_ocaml_dev
