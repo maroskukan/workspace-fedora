@@ -13,6 +13,21 @@
     mode: 0644
   become: true
 
+- name: Ensure repository for Hashicorp is present
+  ansible.builtin.copy:
+    dest: /etc/yum.repos.d/hashicorp.repo
+    content: |
+      [hashicorp]
+      name=Hashicorp Stable Repository
+      enabled=1
+      gpgcheck=1
+      gpgkey=https://rpm.releases.hashicorp.com/gpg
+      baseurl=https://rpm.releases.hashicorp.com/fedora/$releasever/$basearch/stable
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
 - name: Ensure rpm key for brave-browser is present
   ansible.builtin.rpm_key:
     key: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
@@ -30,3 +45,10 @@
     name: "{{ base_packages }}"
     state: present
   become: true
+
+- name: Ensure libvirt support for Vagrant is present
+  ansible.builtin.dnf:
+    name: "{{ vagrant_libvirt_packages }}"
+    state: present
+  become: true
+  when: "'vagrant' | string in base_packages"

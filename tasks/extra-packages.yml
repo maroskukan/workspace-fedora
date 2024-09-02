@@ -17,3 +17,38 @@
     name: "{{ extra_flatpak_packages }}"
     state: present
   become: true
+
+
+- name: Retrieve the current user information
+  ansible.builtin.set_fact:
+    current_user: "{{ ansible_env.USER }}"
+  when: install_kvm
+
+- name: Ensure virtulization is configured
+  become: true
+  when: install_kvm
+  block:
+    - name: Ensure virtualization packages are present
+      ansible.builtin.dnf:
+        name: "{{ kvm_packages }}"
+        state: present
+
+    - name: Ensure that libvirtd is enabled and running
+      ansible.builtin.service:
+        name: libvirtd
+        state: started
+        enabled: true
+
+    - name: Ensure that current user is member of libvirt group
+      ansible.builtin.user:
+        name: "{{ current_user }}"
+        groups: libvirt
+        append: true
+        state: present
+
+    - name: Ensure that uri_default points to system
+      ansible.builtin.lineinfile:
+        path: "/home/{{ current_user }}/.config/libvirt/libvirt.conf"
+        line: 'uri_default = "qemu:///system"'
+        create: true
+      become: false
