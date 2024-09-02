@@ -73,3 +73,71 @@ sudo systemctl set-default multi-user.target
 ```
 
 You can also use `isolate` instead of `set-default` to switch to given target immediately.
+
+### Adjusting filesystem
+
+The default storage layout for Fedora minimal installation creates logical volume for root paritition with size of 15G with the remaining disk space being unused.
+
+```bash
+sudo lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/fedora_slayer/root
+  LV Name                root
+  VG Name                fedora_slayer
+  LV UUID                KxhpQv-PYU1-5JAH-jbWE-0cnS-NvMf-H6h37b
+  LV Write Access        read/write
+  LV Creation host, time slayer, 2024-08-23 16:40:12 -0400
+  LV Status              available
+  # open                 1
+  LV Size                15.00 GiB
+  Current LE             3840
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:1
+
+sudo pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/mapper/luks-a08c4c3e-e45c-4819-80ff-d71a124e8a17
+  VG Name               fedora_slayer
+  PV Size               1.86 TiB / not usable 0   
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              487968
+  Free PE               484128
+  Allocated PE          3840
+  PV UUID               MUIWlm-9xJt-tQsq-PITW-Q6Vf-OO8E-UkgScu
+   
+sudo vgdisplay
+  --- Volume group ---
+  VG Name               fedora_slayer
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               1
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               1.86 TiB
+  PE Size               4.00 MiB
+  Total PE              487968
+  Alloc PE / Size       3840 / 15.00 GiB
+  Free  PE / Size       484128 / <1.85 TiB
+  VG UUID               Im8m1R-n009-OHU6-VgHR-vwBf-i3nm-h29vDv
+```
+
+In order to increase the LV size for root partition, extend the logical volume and then resize the filesystem.
+
+```bash
+# Extend the logical volume
+sudo lvextend -L +15G /dev/mapper/fedora_slayer-root
+
+# Resize the filesystem
+sudo xfs_growfs /dev/mapper/fedora_slayer-root
+```
