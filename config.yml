@@ -21,6 +21,7 @@ base_packages:
   - NetworkManager-wifi
   - git
   - vim
+  - tmux
   - nautilus
   - gnome-terminal
   - gnome-terminal-nautilus
@@ -31,14 +32,13 @@ base_packages:
   #- jq
   #- kodi
   #- nmap
-  #- openssl
-  #- packer
+  - openssl
+  - packer
   #- pass
   #- shellcheck
   #- terraform
   - tree
-  #- unzip
-  #- vagrant
+  - vagrant
   #- vault
   #- zsh
   #- xclip
@@ -53,10 +53,30 @@ extra_packages:
 extra_flatpak_packages:
   - com.spotify.Client
   - com.visualstudio.code
-  #- codium
   #- slack
 
-install_vbox: true
+install_kvm: true
+kvm_packages:
+  - virt-install
+  - libvirt-daemon-config-network
+  - libvirt-daemon-kvm
+  - qemu-kvm
+  - virt-manager
+  - virt-viewer
+  - libguestfs-tools
+  - python3-libguestfs
+  - virt-top
+  - edk2-ovmf
+
+vagrant_libvirt_packages:
+  - gcc
+  - libvirt
+  - libvirt-devel
+  - libxml2-devel
+  - make
+  - ruby-devel
+
+install_vbox: false
 vbox_packages:
   - virtualbox
 
