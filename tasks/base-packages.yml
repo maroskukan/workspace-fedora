@@ -1,54 +1,92 @@
 ---
 - name: Ensure repository for brave-browser is present
-  ansible.builtin.copy:
-    dest: /etc/yum.repos.d/brave-browser.repo
-    content: |
-      [brave-browser]
-      name=Brave Browser
-      enabled=1
-      autorefresh=1
-      baseurl=https://brave-browser-rpm-release.s3.brave.com/$basearch
+  ansible.builtin.get_url:
+    url: https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+    dest: '/etc/yum.repos.d/brave-browser.repo'
     owner: root
     group: root
     mode: 0644
   become: true
 
 - name: Ensure repository for Hashicorp is present
-  ansible.builtin.copy:
-    dest: /etc/yum.repos.d/hashicorp.repo
-    content: |
-      [hashicorp]
-      name=Hashicorp Stable Repository
-      enabled=1
-      gpgcheck=1
-      gpgkey=https://rpm.releases.hashicorp.com/gpg
-      baseurl=https://rpm.releases.hashicorp.com/fedora/$releasever/$basearch/stable
+  ansible.builtin.get_url:
+    url: https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+    dest: '/etc/yum.repos.d/hashicorp.repo'
     owner: root
     group: root
     mode: 0644
   become: true
 
-- name: Ensure rpm key for brave-browser is present
+- name: Ensure GPG key for brave-browser is present
   ansible.builtin.rpm_key:
     key: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
     state: present
   become: true
 
-- name: Ensure rpm key for Visual Studio Code is present
-  ansible.builtin.rpm_key:
-    key: https://packages.microsoft.com/keys/microsoft.asc
-    state: absent
-  become: true
+  #- name: Ensure rpm key for Visual Studio Code is present
+  #ansible.builtin.rpm_key:
+  #  key: https://packages.microsoft.com/keys/microsoft.asc
+  #  state: absent
+  #become: true
 
 - name: Ensure base dnf packages are present
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: "{{ base_packages }}"
     state: present
   become: true
 
 - name: Ensure libvirt support for Vagrant is present
-  ansible.builtin.dnf:
+  ansible.builtin.package:
     name: "{{ vagrant_libvirt_packages }}"
     state: present
   become: true
   when: "'vagrant' | string in base_packages"
+
+- name: Ensure docker engine is configured
+  become: true
+  when: install_docker
+  block:
+    - name: Ensure old versions are absent.
+      ansible.builtin.package:
+        name:
+          - docker
+          - docker-client
+          - docker-client-latest
+          - docker-common
+          - docker-latest
+          - docker-latest-logrotate
+          - docker-logrotate
+          - docker-selinux
+          - docker-engine-selinux
+          - docker-engine
+        state: absent
+
+    - name: Ensure GPG key for docker is present.
+      ansible.builtin.rpm_key:
+        key: https://download.docker.com/linux/fedora/gpg
+        state: present
+
+    - name: Ensure repository for docker is present.
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/fedora/docker-ce.repo
+        dest: '/etc/yum.repos.d/docker-ce.repo'
+        owner: root
+        group: root
+        mode: 0644 
+
+    - name: Ensure docker packages are present.
+      ansible.builtin.package:
+        name: "{{ docker_packages }}"
+        state: present
+
+    - name: Ensure docker deamon is started.
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+
+    - name: Ensure the current user is part of docker group.
+      ansible.builtin.user:
+        name: "{{ ansible_user|default(lookup('env','USER')) }}"
+        groups: docker
+        append: true
+        state: present
