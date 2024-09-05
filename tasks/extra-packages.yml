@@ -18,11 +18,10 @@
     state: present
   become: true
 
-
-- name: Retrieve the current user information
-  ansible.builtin.set_fact:
-    current_user: "{{ ansible_env.USER }}"
-  when: install_kvm
+  #- name: Retrieve the current user information
+  #ansible.builtin.set_fact:
+  #  current_user: "{{ ansible_env.USER }}"
+  #when: install_kvm
 
 - name: Ensure virtulization is configured
   become: true
@@ -41,7 +40,7 @@
 
     - name: Ensure that current user is member of libvirt group
       ansible.builtin.user:
-        name: "{{ current_user }}"
+        name: "{{ ansible_user|default(lookup('env','USER')) }}"
         groups: libvirt
         append: true
         state: present

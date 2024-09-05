@@ -28,6 +28,7 @@ base_packages:
   - brave-browser
   - bat
   - gh
+  - yq
   #- iperf
   #- jq
   #- kodi
