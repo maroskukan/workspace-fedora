@@ -17,17 +17,26 @@
     mode: 0644
   become: true
 
+- name: Ensure repository for VScode is present
+  ansible.builtin.get_url:
+    url: https://packages.microsoft.com/yumrepos/vscode/config.repo
+    dest: '/etc/yum.repos.d/vscode.repo'
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+
 - name: Ensure GPG key for brave-browser is present
   ansible.builtin.rpm_key:
     key: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
     state: present
   become: true
 
-  #- name: Ensure rpm key for Visual Studio Code is present
-  #ansible.builtin.rpm_key:
-  #  key: https://packages.microsoft.com/keys/microsoft.asc
-  #  state: absent
-  #become: true
+- name: Ensure rpm key for Visual Studio Code is present
+  ansible.builtin.rpm_key:
+    key: https://packages.microsoft.com/keys/microsoft.asc
+    state: absent
+  become: true
 
 - name: Ensure base dnf packages are present
   ansible.builtin.package:
@@ -60,6 +69,7 @@
           - docker-engine-selinux
           - docker-engine
         state: absent
+      when: uninstall_old_docker
 
     - name: Ensure GPG key for docker is present.
       ansible.builtin.rpm_key:
@@ -90,3 +100,8 @@
         groups: docker
         append: true
         state: present
+
+- name: Install VSCode Extenions
+  ansible.builtin.command: code --install-extension {{ item }}
+  with_items: "{{ vscode_extensions }}"
+  changed_when: false
