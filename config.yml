@@ -101,6 +101,8 @@ vscode_extensions:
   - ms-python.python
   - yzhang.markdown-all-in-one
   - ms-azuretools.vscode-docker
+  - ms-kubernetes-tools.vscode-kubernetes-tools
+  - ms-vscode-remote.remote-ssh
 
 install_ocaml_dev: true
 opam_pkgs:

@@ -93,6 +93,7 @@
       ansible.builtin.systemd:
         name: docker
         state: started
+        enabled: true
 
     - name: Ensure the current user is part of docker group.
       ansible.builtin.user:
