@@ -26,6 +26,24 @@
     mode: 0644
   become: true
 
+- name: Ensure RPM Fusion GPG keys and repositories are present
+  block:
+    - name: Ensure GPG keys for RPM Fusion free and nonfree are present
+      ansible.builtin.rpm_key:
+        key: "{{ item }}"
+        state: present
+      loop:
+        - "https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-free-fedora-2020"
+        - "https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-nonfree-fedora-2020"
+
+    - name: Ensure repository for RPM free is present
+      ansible.builtin.dnf:
+        name:
+          - "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_facts['distribution_version'] }}.noarch.rpm"
+          - "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_facts['distribution_version'] }}.noarch.rpm"
+        state: present
+  become: true
+
 - name: Ensure GPG key for brave-browser is present
   ansible.builtin.rpm_key:
     key: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
@@ -55,7 +73,7 @@
   become: true
   when: install_docker
   block:
-    - name: Ensure old versions are absent.
+    - name: Ensure old docker packages are absent.
       ansible.builtin.package:
         name:
           - docker
