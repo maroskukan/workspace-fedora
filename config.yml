@@ -13,6 +13,9 @@ ui_packages:
   - gnome-extensions-app
   - google-noto-emoji-fonts
   - google-noto-color-emoji-fonts
+  - gnu-free-sans-fonts
+  - gnu-free-mono-fonts
+  - gnu-free-serif-fonts
 
 install_base: true
 base_packages:
@@ -44,6 +47,7 @@ base_packages:
   #- terraform
   - tree
   - vagrant
+  - eza
   #- vault
   #- zsh
   #- xclip
