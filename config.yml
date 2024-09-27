@@ -11,6 +11,8 @@ enable_ui: true
 ui_packages:
   - gnome-tweaks
   - gnome-extensions-app
+  - google-noto-emoji-fonts
+  - google-noto-color-emoji-fonts
 
 install_base: true
 base_packages:
@@ -68,6 +70,8 @@ kvm_packages:
   - python3-libguestfs
   - virt-top
   - edk2-ovmf
+  - qemu-user-static # support arm on x86
+  - qemu # support arm on x86
 
 vagrant_libvirt_packages:
   - gcc
