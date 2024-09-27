@@ -47,7 +47,7 @@
 
     - name: Ensure that uri_default points to system
       ansible.builtin.lineinfile:
-        path: "/home/{{ current_user }}/.config/libvirt/libvirt.conf"
+        path: "/home/{{ ansible_user|default(lookup('env','USER')) }}/.config/libvirt/libvirt.conf"
         line: 'uri_default = "qemu:///system"'
         create: true
       become: false
