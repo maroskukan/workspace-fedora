@@ -11,6 +11,7 @@ enable_ui: true
 ui_packages:
   - gnome-tweaks
   - gnome-extensions-app
+  - @fonts
   - google-noto-emoji-fonts
   - google-noto-color-emoji-fonts
   - gnu-free-sans-fonts
@@ -48,6 +49,7 @@ base_packages:
   - tree
   - vagrant
   - eza
+  = httpie
   #- vault
   #- zsh
   #- xclip
