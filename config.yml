@@ -45,11 +45,12 @@ base_packages:
   - packer
   #- pass
   #- shellcheck
-  #- terraform
+  #- terraform (replaced by tfswitch)
   - tree
   - vagrant
   - eza
-  = httpie
+  - httpie
+  - bind-utils
   #- vault
   #- zsh
   #- xclip
