@@ -20,6 +20,7 @@ ui_packages:
 
 install_base: true
 base_packages:
+  - azure-cli
   - pciutils
   - usbutils
   - fastfetch
